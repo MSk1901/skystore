@@ -1,0 +1,18 @@
+[
+  {
+    "model": "catalog.category",
+    "pk": 1,
+    "fields": {
+      "name": "Бот",
+      "description": "Различные боты в популярных соц-сетях и мессенджерах"
+    }
+  },
+  {
+    "model": "catalog.category",
+    "pk": 2,
+    "fields": {
+      "name": "Рассылка",
+      "description": "Рассылка сообщений в мессеннджерах или e-mail"
+    }
+  }
+]
