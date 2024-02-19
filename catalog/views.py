@@ -1,8 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+
+from catalog.models import Product
 
 
 def index(request):
-    return render(request, 'main/home.html')
+    context = {'objects': Product.objects.all}
+    return render(request, 'main/home.html', context)
 
 
 def contacts(request):
@@ -14,3 +17,8 @@ def contacts(request):
 Телефон: {phone}
 Сообщение: {message}""")
     return render(request, 'main/contacts.html')
+
+
+def item(request, pk):
+    context = {'object': get_object_or_404(Product, pk=pk)}
+    return render(request, 'main/item.html', context)
