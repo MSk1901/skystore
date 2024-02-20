@@ -1,0 +1,48 @@
+{% extends 'catalog/base.html' %}
+{% block content %}
+{% load customtags %}
+<div class="pricing-header px-3 py-3 pt-md-3 pb-md-4 mx-auto text-center">
+    <h1 class="display-4">Блог</h1>
+</div>
+<div class="col-3 mb-4">
+    <button type="button" class="btn btn btn-block btn-outline-primary btn-center">
+        Добавить пост
+    </button>
+</div>
+<div class="row">
+    {% for object in object_list %}
+    {% if object.is_published %}
+    <div class="col-12">
+        <img src="{% mymedia object.preview %}">
+        <div class="card mb-4 box-shadow">
+            <h3 class="card-header my-0 font-weight-normal">{{ object.title }}</h3>
+            <div class="card-body">
+                <p class="card-text my-0 font-weight-normal">{{ object.content }}</p>
+
+            </div>
+            <div class="card-footer text-muted">
+                <div class="row">
+                    <div class="col-8">
+                        <h6 class="my-0 font-weight-normal mt-2" style="color: gray;">Опубликовано:
+                            {{object.created_at}}</h6>
+                        <h6 class="my-0 font-weight-normal mt-2" style="color: gray;">Просмотров:
+                            {{object.view_count}}</h6>
+                    </div>
+                    <div class="col-2">
+                        <button type="button" class="btn btn btn-block btn-outline-secondary btn-center">
+                            Редактировать
+                        </button>
+                    </div>
+                    <div class="col-2">
+                        <button type="button" class="btn btn btn-block btn-outline-danger btn-center">Удалить
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+</div>
+{% endblock %}
