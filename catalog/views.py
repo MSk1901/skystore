@@ -1,11 +1,11 @@
 from django.shortcuts import render, get_object_or_404
+from django.views.generic import ListView
 
 from catalog.models import Product
 
 
-def index(request):
-    context = {'objects': Product.objects.all}
-    return render(request, 'main/home.html', context)
+class ProductListView(ListView):
+    model = Product
 
 
 def contacts(request):
@@ -16,9 +16,9 @@ def contacts(request):
         print(f"""Имя: {name}
 Телефон: {phone}
 Сообщение: {message}""")
-    return render(request, 'main/contacts.html')
+    return render(request, 'catalog/contacts.html')
 
 
 def item(request, pk):
     context = {'object': get_object_or_404(Product, pk=pk)}
-    return render(request, 'main/item.html', context)
+    return render(request, 'catalog/item.html', context)
