@@ -1,9 +1,9 @@
-{% extends 'main/base.html' %}
+{% extends 'catalog/base.html' %}
 {% block content %}
-{% include 'main/includes/inc_title.html' %}
+{% include 'catalog/includes/inc_title.html' %}
 {% load customtags %}
 <div class="row">
-    {% for object in objects %}
+    {% for object in object_list %}
     <div class="col-4">
         <div class="card mb-4 box-shadow">
             <img src="{% mymedia object.image %}" class="card-img-top">
