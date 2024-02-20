@@ -5,9 +5,7 @@
     <h1 class="display-4">Блог</h1>
 </div>
 <div class="col-3 mb-4">
-    <button type="button" class="btn btn btn-block btn-outline-primary btn-center">
-        Добавить пост
-    </button>
+    <a class="btn btn btn-block btn-outline-primary btn-center" href="{% url 'catalog:create_post' %}">Добавить пост</a>
 </div>
 <div class="row">
     {% for object in object_list %}
