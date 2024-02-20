@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import ListView, View, DetailView
 
-from catalog.models import Product
+from catalog.models import Product, BlogPost
 
 
 class ProductListView(ListView):
@@ -26,3 +26,7 @@ class ContactView(View):
 Телефон: {phone}
 Сообщение: {message}""")
         return render(request, self.template_name)
+
+
+class BlogPostListView(ListView):
+    model = BlogPost
