@@ -8,7 +8,7 @@
     <div class="col-12">
         <img src="{% mymedia object.preview %}">
         <div class="card mb-4 box-shadow">
-            <a href="{% url 'catalog:post' object.pk %}">
+            <a href="{% url 'catalog:post' object.slug %}">
                 <h3 class="card-header my-0 font-weight-normal">{{ object.title }}</h3>
             </a>
             <div class="card-body">
@@ -30,8 +30,9 @@
                         </a>
                     </div>
                     <div class="col-2">
-                        <button type="button" class="btn btn btn-block btn-outline-danger btn-center">Удалить
-                        </button>
+                        <a class="btn btn btn-block btn-outline-danger btn-center"
+                           href="{% url 'catalog:delete_post' object.pk %}">Удалить
+                        </a>
                     </div>
                 </div>
             </div>
