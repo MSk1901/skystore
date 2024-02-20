@@ -1,10 +1,14 @@
-from django.shortcuts import render, get_object_or_404
-from django.views.generic import ListView, View
+from django.shortcuts import render
+from django.views.generic import ListView, View, DetailView
 
 from catalog.models import Product
 
 
 class ProductListView(ListView):
+    model = Product
+
+
+class ProductDetailView(DetailView):
     model = Product
 
 
@@ -22,8 +26,3 @@ class ContactView(View):
 Телефон: {phone}
 Сообщение: {message}""")
         return render(request, self.template_name)
-
-
-def item(request, pk):
-    context = {'object': get_object_or_404(Product, pk=pk)}
-    return render(request, 'catalog/item.html', context)
