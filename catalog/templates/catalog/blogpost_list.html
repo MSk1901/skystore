@@ -13,7 +13,9 @@
     <div class="col-12">
         <img src="{% mymedia object.preview %}">
         <div class="card mb-4 box-shadow">
-            <h3 class="card-header my-0 font-weight-normal">{{ object.title }}</h3>
+            <a href="{% url 'catalog:post' object.slug %}">
+                <h3 class="card-header my-0 font-weight-normal">{{ object.title }}</h3>
+            </a>
             <div class="card-body">
                 <p class="card-text my-0 font-weight-normal">{{ object.content }}</p>
 
