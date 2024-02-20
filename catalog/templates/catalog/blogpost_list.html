@@ -27,9 +27,10 @@
                             {{object.view_count}}</h6>
                     </div>
                     <div class="col-2">
-                        <button type="button" class="btn btn btn-block btn-outline-secondary btn-center">
+                        <a class="btn btn btn-block btn-outline-secondary btn-center"
+                           href="{% url 'catalog:update_post' object.pk %}">
                             Редактировать
-                        </button>
+                        </a>
                     </div>
                     <div class="col-2">
                         <button type="button" class="btn btn btn-block btn-outline-danger btn-center">Удалить
