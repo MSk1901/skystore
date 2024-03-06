@@ -1,6 +1,5 @@
 from django.db import models
 
-
 NULLABLE = {'blank': True, 'null': True}
 
 
@@ -31,6 +30,21 @@ class Product(models.Model):
     class Meta:
         verbose_name = 'продукт'
         verbose_name_plural = 'продукты'
+
+
+class Version(models.Model):
+    product = models.ForeignKey(Product, related_name='versions', on_delete=models.SET_NULL, default=None, **NULLABLE,
+                                verbose_name='продукт')
+    number = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='номер')
+    name = models.CharField(max_length=50, verbose_name='название')
+    is_current = models.BooleanField(verbose_name='текущая')
+
+    def __str__(self):
+        return f'{self.number} - {self.name}'
+
+    class Meta:
+        verbose_name = 'версия'
+        verbose_name_plural = 'версии'
 
 
 class BlogPost(models.Model):
