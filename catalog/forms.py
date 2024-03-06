@@ -1,17 +1,22 @@
 from django import forms
 
-from catalog.models import Product
+from catalog.models import Product, Version
 
 
-class ProductForm(forms.ModelForm):
-    class Meta:
-        model = Product
-        exclude = ('created_at', 'updated_at',)
-
+class StyleFormMixin:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
-            field.widget.attrs['class'] = 'form-control'
+            if isinstance(field, forms.BooleanField):
+                field.widget.attrs['class'] = 'form-check-input'
+            else:
+                field.widget.attrs['class'] = 'form-control'
+
+
+class ProductForm(StyleFormMixin, forms.ModelForm):
+    class Meta:
+        model = Product
+        exclude = ('created_at', 'updated_at',)
 
     def clean_name(self):
         restricted_words = (
@@ -33,4 +38,18 @@ class ProductForm(forms.ModelForm):
             if word in restricted_words:
                 raise forms.ValidationError(f'Нельзя использовать слово "{word}" в описании продукта')
 
+        return cleaned_data
+
+
+class VersionForm(StyleFormMixin, forms.ModelForm):
+    class Meta:
+        model = Version
+        fields = '__all__'
+
+    def clean_is_current(self):
+        cleaned_data = self.cleaned_data.get('is_current')
+        product = self.cleaned_data.get('product')
+
+        if cleaned_data and product.versions.filter(is_current=True).exclude(pk=self.instance.pk).exists():
+            raise forms.ValidationError('Текущая версия может быть только одна')
         return cleaned_data
