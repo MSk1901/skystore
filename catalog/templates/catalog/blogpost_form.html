@@ -1,0 +1,32 @@
+{% extends 'catalog/base.html' %}
+{% block content %}
+{% load customtags %}
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div class="card mb-4 box-shadow">
+            <div class="card-header text-center">
+                <h4 class="my-0 font-weight-normal">Новый пост</h4>
+            </div>
+            <form method="post" class="form-floating" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="m-3">
+                    <label for="name">Название поста</label>
+                    <input type="text" name="title" class="form-control" id="name" placeholder="Новый пост"
+                           required>
+                </div>
+                <div class="m-3">
+                    <label for="formFile" class="form-label">Изображение</label>
+                    <input class="form-control" name="preview" type="file" id="formFile">
+                </div>
+                <div class="m-3">
+                    <label for="message">Содержание</label>
+                    <textarea name="content" class="form-control" id="message" required></textarea>
+                </div>
+                <div class="m-3">
+                    <button type="submit" class="btn btn-outline-primary">Отправить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

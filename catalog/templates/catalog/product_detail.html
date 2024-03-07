@@ -1,6 +1,6 @@
-{% extends 'main/base.html' %}
+{% extends 'catalog/base.html' %}
 {% block content %}
-{% include 'main/includes/inc_title.html' %}
+{% include 'catalog/includes/inc_title.html' %}
 {% load customtags %}
 <div class="row justify-content-center">
     <div class="col-4">
@@ -9,11 +9,20 @@
             <div class="card-header text-center">
                 <h4 class="my-0 font-weight-normal">{{ object.name }}</h4>
                 <h6 class="my-0 font-weight-normal" style="color: gray;">{{ object.category }}</h6>
+                {% if current_version %}
+                <h6 class="my-0 font-weight-normal" style="color: gray;">Версия {{ current_version }}</h6>
+                {% endif %}
             </div>
             <div class="card-body text-center">
                 <h1 class="card-title pricing-card-title text-center"><p>$ {{ object.price }}</p></h1>
                 <p class="card-text text-center">{{ object.description }}</p>
-                <button type="button" class="btn btn-lg btn-block btn-outline-success btn-center">Купить</button>
+                <div class="btn-group">
+                    <a type="button" class="btn btn-sm btn-outline-secondary"
+                       href="{% url 'catalog:update_item' object.pk %}">Редактировать
+                    </a>
+                    <a type="button" class="btn btn-sm btn-outline-danger"
+                       href="{% url 'catalog:delete_item' object.pk %}">Удалить</a>
+                </div>
             </div>
             <div class="card-footer text-muted">
                 <h6 class="my-0 font-weight-normal mt-2" style="color: gray;">Создано: {{ object.created_at }}</h6>

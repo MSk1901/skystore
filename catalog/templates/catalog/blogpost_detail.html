@@ -1,0 +1,43 @@
+{% extends 'catalog/base.html' %}
+{% block content %}
+{% load customtags %}
+<div class="pricing-header px-3 py-3 pt-md-3 pb-md-4 mx-auto text-center">
+    <h1 class="display-4">Блог</h1>
+</div>
+<div class="row">
+    <div class="col-12">
+        <img src="{% mymedia object.preview %}">
+        <div class="card mb-4 box-shadow">
+            <a href="{% url 'catalog:post' object.slug %}">
+                <h3 class="card-header my-0 font-weight-normal">{{ object.title }}</h3>
+            </a>
+            <div class="card-body">
+                <p class="card-text my-0 font-weight-normal">{{ object.content }}</p>
+
+            </div>
+            <div class="card-footer text-muted">
+                <div class="row">
+                    <div class="col-8">
+                        <h6 class="my-0 font-weight-normal mt-2" style="color: gray;">Опубликовано:
+                            {{object.created_at}}</h6>
+                        <h6 class="my-0 font-weight-normal mt-2" style="color: gray;">Просмотров:
+                            {{object.view_count}}</h6>
+                    </div>
+                    <div class="col-2">
+                        <a class="btn btn btn-block btn-outline-secondary btn-center"
+                           href="{% url 'catalog:update_post' object.pk %}">
+                            Редактировать
+                        </a>
+                    </div>
+                    <div class="col-2">
+                        <a class="btn btn btn-block btn-outline-danger btn-center"
+                           href="{% url 'catalog:delete_post' object.pk %}">Удалить
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
