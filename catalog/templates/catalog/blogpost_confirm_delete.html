@@ -1,0 +1,28 @@
+{% extends 'catalog/base.html' %}
+{% block content %}
+{% load customtags %}
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div class="card mb-4 box-shadow">
+            <div class="card-header text-center">
+                <h4 class="my-0 font-weight-normal">Удаление поста</h4>
+            </div>
+            <form method="post" class="form-floating" enctype="multipart/form-data">
+                {% csrf_token %}
+                <p class="card-text my-0 font-weight-normal m-3">Хотите удалить пост "{{ object.title }}"?</p>
+                <div class="row">
+                    <div class="col-2 m-3">
+                        <button type="submit" class="btn btn-outline-danger">Подтвердить</button>
+                    </div>
+                    <div class="col-2 m-3">
+                        <a class="btn btn btn-block btn-outline-secondary btn-center" href="{% url 'catalog:posts' %}">
+                            Отменить
+                        </a>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
