@@ -12,6 +12,15 @@ from catalog.models import Product, BlogPost, Version
 class ProductListView(ListView):
     model = Product
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        products = self.get_queryset()
+
+        for product in products:
+            product.version = product.versions.filter(is_current=True).first()
+        context['object_list'] = products
+        return context
+
 
 class ProductDetailView(DetailView):
     model = Product
@@ -45,10 +54,11 @@ class ProductCreateView(CreateView):
         context_data = self.get_context_data()
         formset = context_data['formset']
         with transaction.atomic():
-            if form.is_valid() and formset.is_valid():
+            if form.is_valid():
                 self.object = form.save()
-                formset.instance = self.object
-                formset.save()
+                if formset.is_valid():
+                    formset.instance = self.object
+                    formset.save()
                 return super().form_valid(form)
             else:
                 return self.render_to_response(self.get_context_data(form=form, formset=formset))
