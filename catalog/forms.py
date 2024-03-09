@@ -45,11 +45,3 @@ class VersionForm(StyleFormMixin, forms.ModelForm):
     class Meta:
         model = Version
         fields = '__all__'
-
-    def clean_is_current(self):
-        cleaned_data = self.cleaned_data.get('is_current')
-        product = self.cleaned_data.get('product')
-
-        if cleaned_data and product.versions.filter(is_current=True).exclude(pk=self.instance.pk).exists():
-            raise forms.ValidationError('Текущая версия может быть только одна')
-        return cleaned_data
