@@ -1,0 +1,29 @@
+{% extends 'catalog/base.html' %}
+{% block content %}
+{% include 'catalog/includes/inc_title.html' %}
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div class="card mb-4 box-shadow">
+            <div class="card-header text-center">
+                <h4 class="my-0 font-weight-normal">Вход</h4>
+            </div>
+            <div class="card-body m-3">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <div id="liveAlertPlaceholder"></div>
+                            <a class="btn btn-outline-secondary btn-sm" href="{% url 'users:new_password' %}">
+                                Восстановить пароль
+                            </a>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-outline-primary">Подтвердить</button>
+                    <a class="btn btn-outline-danger" href="{% url 'catalog:list' %}">Отменить</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
