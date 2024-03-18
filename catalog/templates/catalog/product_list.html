@@ -21,9 +21,15 @@
                 <h1 class="card-title pricing-card-title text-center">$ {{ object.price }}</h1>
                 <p class="card-text text-center">{{ object.description|truncatechars:100}}</p>
                 <div class="btn-group">
+                    {% if perms.catalog.unpublish and perms.catalog.change_description and perms.catalog.change_category %}
                     <a type="button" class="btn btn-sm btn-outline-secondary"
                        href="{% url 'catalog:update_item' object.pk %}">Редактировать
                     </a>
+                    {% elif user == object.owner %}
+                    <a type="button" class="btn btn-sm btn-outline-secondary"
+                       href="{% url 'catalog:update_item' object.pk %}">Редактировать
+                    </a>
+                    {% endif %}
                     <a type="button" class="btn btn-sm btn-outline-danger"
                        href="{% url 'catalog:delete_item' object.pk %}">Удалить</a>
                 </div>
