@@ -27,6 +27,7 @@ class Product(models.Model):
     updated_at = models.DateTimeField(auto_now=True, verbose_name='дата последнего изменения', **NULLABLE)
     owner = models.ForeignKey(
         User, on_delete=models.CASCADE, verbose_name='владелец', to_field='email', default='admin@admin.ru')
+    is_published = models.BooleanField(default=False, verbose_name='опубликовано')
 
     def __str__(self):
         return f'{self.name}, ${self.price}'
