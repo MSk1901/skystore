@@ -29,10 +29,9 @@
                 </div>
             </div>
             <div class="card-footer text-muted">
-                <h6 class="my-0 font-weight-normal mt-2" style="color: gray;">Создано:
-                    {{object.created_at}}</h6>
-                <h6 class="my-0 font-weight-normal mb-2" style="color: gray;">Обновлено:
-                    {{object.updated_at}}</h6>
+                <h6 class="my-0 font-weight-normal mt-2" style="color: gray;">Создано: {{object.created_at}}</h6>
+                <h6 class="my-0 font-weight-normal mb-2" style="color: gray;">Обновлено: {{object.updated_at}}</h6>
+                <h6 class="my-0 font-weight-normal mb-2" style="color: gray;">Владелец: {{ object.owner.email }}</h6>
             </div>
         </div>
 

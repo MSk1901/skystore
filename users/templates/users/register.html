@@ -1,0 +1,21 @@
+{% extends 'catalog/base.html' %}
+{% block content %}
+{% include 'catalog/includes/inc_title.html' %}
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div class="card mb-4 box-shadow">
+            <div class="card-header text-center">
+                <h4 class="my-0 font-weight-normal">Регистрация</h4>
+            </div>
+            <div class="card-body m-3">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-outline-primary">Зарегистрироваться</button>
+                    <a class="btn btn-outline-danger" href="{% url 'catalog:list' %}">Отменить</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
