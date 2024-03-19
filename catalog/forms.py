@@ -41,6 +41,25 @@ class ProductForm(StyleFormMixin, forms.ModelForm):
         return cleaned_data
 
 
+class ModeratorProductForm(ProductForm):
+    class Meta(ProductForm.Meta):
+        fields = ('description', 'category', 'is_published')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if 'is_published' in self.fields:
+            is_published_value = self.instance.is_published if self.instance else None
+            if is_published_value is False:
+                self.fields['is_published'].widget.attrs.update({
+                    'class': 'form-check-input',
+                    'disabled': 'disabled'
+                })
+
+    def clean_description(self):
+        cleaned_data = super().clean_description()
+        return cleaned_data
+
+
 class VersionForm(StyleFormMixin, forms.ModelForm):
     class Meta:
         model = Version
