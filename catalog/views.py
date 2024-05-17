@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
+from django.db.models import Prefetch, Subquery, OuterRef, TextField
 from django.forms import inlineformset_factory
 from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
@@ -16,12 +17,14 @@ class ProductListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        products = self.get_queryset()
-
-        for product in products:
-            product.version = product.versions.filter(is_current=True).first()
-        context['object_list'] = products
         return context
+
+    def get_queryset(self):
+        queryset = self.model.objects.select_related(
+            "category", "owner").prefetch_related(
+            Prefetch("versions", queryset=Version.objects.filter(is_current=True))
+        )
+        return queryset
 
 
 class ProductDetailView(LoginRequiredMixin, DetailView):
