@@ -1,39 +1,35 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
+from django.db.models import Subquery, OuterRef, Value, CharField
+from django.db.models.functions import Concat
 from django.forms import inlineformset_factory
 from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, View, DetailView, CreateView, UpdateView, DeleteView
 from pytils.translit import slugify
 
-from catalog.forms import ProductForm, VersionForm
+from catalog.forms import ProductForm, VersionForm, ModeratorProductForm
 from catalog.models import Product, BlogPost, Version
 
 
-class ProductListView(LoginRequiredMixin, ListView):
+class CurrentVersionQuerysetMixin:
+    def get_queryset(self):
+        current_version = Version.objects.filter(product=OuterRef('pk'), is_current=True).annotate(
+            version_info=Concat('number', Value(' - '), 'name', output_field=CharField())
+        ).values('version_info')
+        queryset = Product.objects.select_related("category", "owner").annotate(
+            current_version=Subquery(current_version))
+        return queryset
+
+
+class ProductListView(CurrentVersionQuerysetMixin, LoginRequiredMixin, ListView):
     login_url = "users:login"
     model = Product
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        products = self.get_queryset()
 
-        for product in products:
-            product.version = product.versions.filter(is_current=True).first()
-        context['object_list'] = products
-        return context
-
-
-class ProductDetailView(LoginRequiredMixin, DetailView):
+class ProductDetailView(CurrentVersionQuerysetMixin, LoginRequiredMixin, DetailView):
     model = Product
     login_url = "users:login"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        product = self.get_object()
-        context['versions'] = product.versions.all()
-        context['current_version'] = product.versions.filter(is_current=True).first()
-        return context
 
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
@@ -80,25 +76,39 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        FormSet = inlineformset_factory(self.model, Version, form=VersionForm, extra=1)
-        if self.request.method == 'POST':
-            formset = FormSet(self.request.POST, instance=self.object)
-        else:
-            formset = FormSet(instance=self.object)
-        context['formset'] = formset
+
+        user = self.request.user
+        is_moderator = user.groups.filter(name='moderator').exists()
+        if not is_moderator:
+            FormSet = inlineformset_factory(self.model, Version, form=VersionForm, extra=1)
+            if self.request.method == 'POST':
+                formset = FormSet(self.request.POST, instance=self.object)
+            else:
+                formset = FormSet(instance=self.object)
+            context['formset'] = formset
         return context
 
     def form_valid(self, form):
         context_data = self.get_context_data()
-        formset = context_data['formset']
-        with transaction.atomic():
-            if form.is_valid() and formset.is_valid():
-                self.object = form.save()
-                formset.instance = self.object
-                formset.save()
-                return super().form_valid(form)
-            else:
-                return self.render_to_response(self.get_context_data(form=form, formset=formset))
+        if 'formset' in context_data:
+            formset = context_data['formset']
+            with transaction.atomic():
+                if form.is_valid() and formset.is_valid():
+                    self.object = form.save()
+                    formset.instance = self.object
+                    formset.save()
+                    return super().form_valid(form)
+                else:
+                    return self.render_to_response(self.get_context_data(form=form, formset=formset))
+        else:
+            return super().form_valid(form)
+
+    def get_form_class(self):
+        user = self.request.user
+        if user.groups.filter(name='moderator').exists():
+            return ModeratorProductForm
+        else:
+            return super().get_form_class()
 
 
 class ProductDeleteView(LoginRequiredMixin, DeleteView):
