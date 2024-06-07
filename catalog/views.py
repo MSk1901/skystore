@@ -1,6 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
-from django.db.models import Prefetch, Subquery, OuterRef, TextField
+from django.db.models import Subquery, OuterRef, Value, CharField
+from django.db.models.functions import Concat
 from django.forms import inlineformset_factory
 from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
@@ -11,32 +12,24 @@ from catalog.forms import ProductForm, VersionForm, ModeratorProductForm
 from catalog.models import Product, BlogPost, Version
 
 
-class ProductListView(LoginRequiredMixin, ListView):
-    login_url = "users:login"
-    model = Product
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
-
+class CurrentVersionQuerysetMixin:
     def get_queryset(self):
-        queryset = self.model.objects.select_related(
-            "category", "owner").prefetch_related(
-            Prefetch("versions", queryset=Version.objects.filter(is_current=True))
-        )
+        current_version = Version.objects.filter(product=OuterRef('pk'), is_current=True).annotate(
+            version_info=Concat('number', Value(' - '), 'name', output_field=CharField())
+        ).values('version_info')
+        queryset = Product.objects.select_related("category", "owner").annotate(
+            current_version=Subquery(current_version))
         return queryset
 
 
-class ProductDetailView(LoginRequiredMixin, DetailView):
+class ProductListView(CurrentVersionQuerysetMixin, LoginRequiredMixin, ListView):
+    login_url = "users:login"
+    model = Product
+
+
+class ProductDetailView(CurrentVersionQuerysetMixin, LoginRequiredMixin, DetailView):
     model = Product
     login_url = "users:login"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        product = self.get_object()
-        context['versions'] = product.versions.all()
-        context['current_version'] = product.versions.filter(is_current=True).first()
-        return context
 
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
