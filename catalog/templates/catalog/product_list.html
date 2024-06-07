@@ -13,7 +13,9 @@
                     <h4 class="my-0 font-weight-normal">{{ object.name }}</h4>
                 </a>
                 <h6 class="my-0 font-weight-normal" style="color: gray;">{{ object.category }}</h6>
-                <h6 class="my-0 font-weight-normal" style="color: gray;">Версия {{ object.versions.first }}</h6>
+                {% if object.current_version %}
+                <h6 class="my-0 font-weight-normal" style="color: gray;">Версия {{ object.current_version }}</h6>
+                {% endif %}
             </div>
             <div class="card-body text-center">
                 <h1 class="card-title pricing-card-title text-center">$ {{ object.price }}</h1>
